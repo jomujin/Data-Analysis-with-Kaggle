@@ -41,17 +41,23 @@ class Nba:
         self,
         idx
     ):
-        self.idx: int = idx
+        self.idx: str = idx
 
     def _get_url(
         self,
         page_typ: str
-    ):
-        self.url = f"https://www.espn.com/nba/{page_typ}/_/gameId/{self.idx}"
+    )-> str:
+        if not page_typ:
+            raise ValueError("Missing page_typ")
+
+        if not isinstance(page_typ, str):
+            raise TypeError("Tag should be a string")
+
+        self.url: str = f"https://www.espn.com/nba/{page_typ}/_/gameId/{self.idx}"
 
     def _get_req(self):
         try:
-            self.req = requests.get(self.game_url)
+            self.req = requests.get(self.url)
 
         except requests.exceptions.Timeout as errd:
             RequestsTimeOutError("Timeout Error : ", errd)
@@ -157,10 +163,18 @@ class NbaBoxScore(Nba):
     def _get_json_by_compile(self, compile: str, flags: str = re.DOTALL):
         return super()._get_json_by_compile(compile, flags)
 
-    self._get_url(
-        page_typ='boxscore'
-    )
-    self._get_find_by_tag(
-        tag='script',
-        type_var='text/javascript'
-    )
+
+    def crawl_box_score(self):
+        self._get_url(
+            page_typ='boxscore'
+        )
+        self._get_req()
+        self._get_html()
+        self._get_find_by_tag(
+            tag='script',
+            type_var='text/javascript'
+        )
+        self._get_json_by_compile(
+            compile=r'window\[\'__espnfitt__\'\]\s*=\s*(\{.*\});',
+            flags=re.DOTALL
+        )
