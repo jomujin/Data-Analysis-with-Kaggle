@@ -41,6 +41,12 @@ class Nba:
         self,
         idx
     ):
+        if not idx:
+            raise ValueError("Missing idx")
+        
+        if not isinstance(idx, str):
+            raise TypeError("Idx should be a string")
+
         self.idx: str = idx
 
     def _get_url(
