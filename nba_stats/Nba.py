@@ -112,20 +112,14 @@ class Nba:
 
     def _get_json_by_compile(
         self,
-        compile: str,
+        compile,
         flags = re.DOTALL
     ):
         if not compile:
             raise ValueError("Missing Compile")
 
-        # if not isinstance(compile, str):
-        #     raise TypeError("Compile should be a string")
-
         if not flags:
             raise ValueError("Missing Flags")
-
-        # if not isinstance(flags, str):
-        #     raise TypeError("Flags should be a string")
 
         if not self.scripts:
             ResultByTagsNotExistedError("Not Existed Result By Tags")
