@@ -39,7 +39,7 @@ class ResultByTagsNotExistedError(Exception):
 class Nba:
     def __init__(
         self,
-        idx
+        idx: str
     ):
         if not idx:
             raise ValueError("Missing idx")
@@ -52,7 +52,7 @@ class Nba:
     def _get_url(
         self,
         page_typ: str
-    )-> str:
+    ):
         if not page_typ:
             raise ValueError("Missing page_typ")
 
@@ -85,16 +85,16 @@ class Nba:
         else:
             RequestsNotExistedError("Not Existed Requests")
 
-    def _get_find_by_tag(
+    def _get_find_by_name(
         self,
-        tag: str,
+        name: str,
         type_var: str
     ):
-        if not tag:
-            raise ValueError("Missing tag")
+        if not name:
+            raise ValueError("Missing Name")
 
-        if not isinstance(tag, str):
-            raise TypeError("Tag should be a string")
+        if not isinstance(name, str):
+            raise TypeError("Name should be a string")
 
         if not type_var:
             raise ValueError("Missing type")
@@ -105,29 +105,29 @@ class Nba:
         if not self.soup:
             SoupNotExistedError("Not Existed Requests")
 
-        self.script_tags = self.soup.find_all(
-            tag=tag,
+        self.scripts = self.soup.find_all(
+            name=name,
             type=type_var
         )
 
     def _get_json_by_compile(
         self,
         compile: str,
-        flags: str = re.DOTALL
+        flags = re.DOTALL
     ):
         if not compile:
             raise ValueError("Missing Compile")
 
-        if not isinstance(compile, str):
-            raise TypeError("Compile should be a string")
+        # if not isinstance(compile, str):
+        #     raise TypeError("Compile should be a string")
 
         if not flags:
             raise ValueError("Missing Flags")
 
-        if not isinstance(flags, str):
-            raise TypeError("Flags should be a string")
+        # if not isinstance(flags, str):
+        #     raise TypeError("Flags should be a string")
 
-        if not self.script_tags:
+        if not self.scripts:
             ResultByTagsNotExistedError("Not Existed Result By Tags")
 
         self.jsons: List[str] = []
@@ -136,9 +136,9 @@ class Nba:
             flags
         )
         
-        for script_tag in self.script_tags:
-            if script_tag.string:
-                script_content = script_tag.string
+        for script in self.scripts:
+            if script.string:
+                script_content = script.string
                 match = pattern.search(script_content)
 
                 if match:
@@ -150,9 +150,9 @@ class Nba:
 class NbaBoxScore(Nba):
     def __init__(
         self,
-        idx
+        idx: str
     ):
-        super().__init__(self, idx)
+        super().__init__(idx)
 
     def _get_url(self, page_typ: str):
         return super()._get_url(page_typ)
@@ -164,9 +164,9 @@ class NbaBoxScore(Nba):
         return super()._get_html()
 
     def _get_find_by_tag(self, tag: str, type_var: str):
-        return super()._get_find_by_tag(tag, type_var)
+        return super()._get_find_by_name(tag, type_var)
 
-    def _get_json_by_compile(self, compile: str, flags: str = re.DOTALL):
+    def _get_json_by_compile(self, compile: str, flags = re.DOTALL):
         return super()._get_json_by_compile(compile, flags)
 
 
@@ -176,8 +176,8 @@ class NbaBoxScore(Nba):
         )
         self._get_req()
         self._get_html()
-        self._get_find_by_tag(
-            tag='script',
+        self._get_find_by_name(
+            name='script',
             type_var='text/javascript'
         )
         self._get_json_by_compile(
