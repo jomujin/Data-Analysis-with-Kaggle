@@ -43,7 +43,7 @@ class ResultByTagsNotExistedError(Exception):
 
 
 @dataclass
-class Nba:
+class ESPN_NBA:
     def __init__(
         self
     ):
@@ -152,7 +152,7 @@ class Nba:
                     json_data = json.loads(json_str)
                     self.jsons.append(json_data)
 
-class NbaBoxScore(Nba):
+class ESPN_NBA_Box_Score(ESPN_NBA):
     def __init__(
         self
     ):
